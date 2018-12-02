@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+
+<head>
+    <script type = "text/javascript" src="{{ url_for('static', filename = 'barchart.js') }}" ></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script type="text/javascript" src="//d3js.org/d3.v3.min.js"></script>
+    <script type="text/javascript" src="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.min.js"></script>
+    <link rel="stylesheet" href="//cdn.jsdelivr.net/cal-heatmap/3.3.10/cal-heatmap.css" />
+    <link rel="stylesheet" href="styles.css">
+</head>
+<style>
+    body{
+        {#background-image: url("https://cdn.hipwallpaper.com/i/36/52/6XPj4i.jpg");#}
+        background-color: #11a9e2;
+        background-position: center center;
+        background-repeat:  no-repeat;
+        background-attachment: fixed;
+		background-size:  cover;
+    }
+    h1{
+        text-align: center;
+        margin: 0;
+        font: bold 100px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+        color: #fff;
+        text-shadow: 0 1px 0 #cccccc, 0 2px 0 #c9c9c9, 0 3px 0 #bbbbbb, 0 4px 0 #b9b9b9, 0 5px 0 #aaaaaa, 0 6px 1px rgba(0, 0, 0, 0.1), 0 0 5px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.3), 0 3px 5px rgba(0, 0, 0, 0.2), 0 5px 10px rgba(0, 0, 0, 0.25), 0 10px 10px rgba(0, 0, 0, 0.2), 0 20px 20px rgba(0, 0, 0, 0.15);
+        -webkit-transition: .2s all linear;
+        {#text-shadow: 6px 6px 0px rgba(0,0,0,0.2);#}
+        {#text-shadow: 0 1px 0 #ccc,#}
+        {#       0 2px 0 #c9c9c9,#}
+        {#       0 3px 0 #bbb,#}
+        {#       0 4px 0 #b9b9b9,#}
+        {#       0 5px 0 #aaa,#}
+        {#       0 6px 1px rgba(0,0,0,.1),#}
+        {#       0 0 5px rgba(0,0,0,.1),#}
+        {#       0 1px 3px rgba(0,0,0,.3),#}
+        {#       0 3px 5px rgba(0,0,0,.2),#}
+        {#       0 5px 10px rgba(0,0,0,.25),#}
+        {#       0 10px 10px rgba(0,0,0,.2),#}
+        {#       0 20px 20px rgba(0,0,0,.15);#}
+    }
+    #wrapper{
+        margin: auto;
+        width: 85%;
+        height: 50%;
+        background-color: rgba(112,178,255, 0.2);
+        overflow: hidden;
+    }
+    #bar_graph{
+        {#border-style: solid;#}
+        {#border-color: black;#}
+        width: 50%;
+        height: 50%;
+        float: left;
+    }
+    #graph{
+        width: 80%;
+        margin-top: 20px;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    #description{
+        {#border-style: solid;#}
+        {#border-color: black;#}
+        {#background-color: rgba(160,204,255, 0.3);#}
+        width: 50%;
+        {#height: 50%;#}
+        overflow: hidden;
+        float: right;
+        word-wrap: normal;
+    }
+    #text{
+        padding: 5% 5%;
+        color: #eaeaea;
+        font: 18px/1 "Helvetica Neue", Helvetica, Arial, sans-serif;
+    }
+    p{
+        text-indent: 2em;
+    }
+    ul.a {
+        list-style-type: square;
+    }
+    #heatmap{
+        text-align: center;
+        background-color: rgba(112,178,255, 0.2);
+    }
+    button{
+        margin: 5px;
+        color: #0099CC;
+        background: transparent;
+        border: 2px solid #0099CC;
+        border-radius: 6px;
+    }
+    button:hover{
+        background-color: #008CBA;
+        color: white;
+    }
+    #cal-heatmap{
+        margin: auto;
+        width: 80%;
+    }
+    #cal-heatmap .graph-rect {fill:#fff;}
+    #cal-heatmap .q4{fill:#4C0099;}
+	#cal-heatmap .q3{fill:#7F00FF;}
+	#cal-heatmap .q2{fill:#B266FF;}
+	#cal-heatmap .q1{fill:#E5CCFF;}
+    #egg{
+        position: absolute;
+        right: 3px;
+        bottom: 3px;
+        width: 5%;
+        {#border: 2px solid #0099CC;#}
+    }
+    #easter-egg{
+        {#border: 2px solid #0099CC;#}
+    }
+</style>
+<body onload="loadBar()">
+<h1>PWNED ?</h1>
+<div id="wrapper">
+{#    /*------------------------------------------------------BAR GRAPH-----------------------------------------------------------*/#}
+    <div id="bar_graph"><div id="graph"></div></div>
+{#    /*------------------------------------------------------DESCRIPTION-----------------------------------------------------------*/#}
+        <div id="description">
+            <div id="text">
+            <b>What is a data breach?</b>
+                <p>
+                    A <b>data breach</b> is an incident where information is stolen or taken from a system without the knowledge or authorization of the system’s owner.
+                    A small company or large organization may suffer a data breach. Stolen data may involve sensitive, proprietary, or confidential information
+                    such as credit card numbers, customer data, trade secrets, or matters of national security.
+                </p>
+            <b>How can I help protect my personal information in the event of a data breach?</b>
+                <p>
+                    <i>To help protect your identity, it’s important to take steps to help protect yourself and your personal information. These steps can include:</i>
+                    <ul class="a">
+                        <li>Use strong, secure passwords.</li>
+                        <li>Monitor your bank and other financial accounts.</li>
+                        <li>Check your credit report.</li>
+                        <li>Take action as soon as possible.</li>
+                        <li>Secure your phone</li>
+                        <li>Use only secure URLs</li>
+                        <li>Implement high-quality security software</li>
+                        <li>Back up your files and ensure their safety</li>
+                        <li>Avoid oversharing on social media</li>
+                    </ul>
+                    <i><a href="https://us.norton.com/internetsecurity-privacy-data-breaches-what-you-need-to-know.html">Click Here For More Information</a></i>
+                </p>
+            </div>
+        </div>
+</div>
+{#/*------------------------------------------------------HEAT MAP------------------------------------------------------------*/#}
+    <p>
+        <div id="heatmap">
+            <div id="cal-heatmap"></div>
+            <button id="domainDynamicDimension-previous"><-Previous Year</button>
+            <button id="domainDynamicDimension-next">Next Year-></button>
+        </div>
+        <script>
+            var xmlhttp = new XMLHttpRequest();
+            xmlhttp.open("GET", "/h-json", true);
+            xmlhttp.responseType = "json";
+            xmlhttp.send();
+            xmlhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 200){
+                    createHeatMap(this.response);
+                }
+            };
+
+            function createHeatMap(data)
+            {
+                var cal = new CalHeatMap();
+                cal.init({
+                    itemSelector: "#cal-heatmap",
+                    domain: "month", subDomain: "day",
+                    subDomainTitleFormat: {
+                        empty: "There is no recorded pwned count on {date}",
+                        filled: "{count} pwned count on {date}"
+                    },
+                    start: new Date(2018, 0), minDate: new Date(2007, 0), maxDate: new Date(), range: 12,
+                    domainLabelFormat: "%b %Y", domainGutter: 20, domainMargin: 10,
+                    cellSize: 15,
+                    verticalOrientation: false,
+                    animationDuration: 800,
+                    nextSelector: "#domainDynamicDimension-next", previousSelector: "#domainDynamicDimension-previous",
+                    legend: [181871, 764357, 4907802], legendCellPadding: 8, legendCellSize: 15,
+                    data: data,
+                    highlight: "now"
+                });
+                $("#domainDynamicDimension-next").on("click", function(e) {
+                    e.preventDefault();
+                    if (!cal.next(12)) {
+                        alert("No more domains to load");
+                    }
+                });
+                $("#domainDynamicDimension-previous").on("click", function(e) {
+                    e.preventDefault();
+                    if (!cal.previous(12)) {
+                        alert("No more domains to load");
+                    }
+                });
+            }
+            function myfunction(){
+                document.getElementById("easter-egg").innerHTML = "You Found An Easter Egg!";
+            }
+        </script>
+    </p>
+</div>
+<img id="egg" src="https://orig00.deviantart.net/fefd/f/2016/351/a/5/rotating_minecraft_diamond_by_atagene-darz0p6.gif" onclick="myfunction()">
+<div id="easter-egg"></div>
+</body>
+
+</html>
